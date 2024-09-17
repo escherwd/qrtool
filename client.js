@@ -47,7 +47,6 @@ function updateItems() {
         newItem.querySelectorAll("button")[0].addEventListener("click", (event) => {
             let index = Number(event.target.getAttribute('i'))
             let item = items[index]
-            console.log('click ', index, item)
             dlQR(item.url, item.fileName)
         })
         table.appendChild(newItem);
@@ -135,12 +134,12 @@ document.getElementById('upload').addEventListener('change', async (event) => {
                 qr.decode(image)
             })
         } catch (err) {
+            // Append to list of unsuccessful scans
             errors.push(new QRItem(image, event.target.files[i].name, null))
             updateItems()
             continue
         }
-        // Step 3: save the new file
-        console.log(qrResult)
+        // Step 3: Append to list of successful scans
         items.push(new QRItem(image, event.target.files[i].name, qrResult))
         updateItems()
     }
