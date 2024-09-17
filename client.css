@@ -1,0 +1,111 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.center {
+    max-width: 40rem;
+    margin: 0rem auto;
+    padding: 0 3rem;
+    position: relative;
+}
+
+.header {
+    padding: 2rem 0;
+}
+
+.header h2 {
+    margin: 0px;
+    padding: 0px;
+}
+
+.statbar {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 0 1rem;
+}
+
+.statbar > h3 {
+    margin: 0;
+    padding: 0;
+}
+
+.upload {
+    border: 2px dashed #ccc;
+    background-color: whitesmoke;
+    border-radius: 4px;
+    padding: 2rem;
+    /* margin: 0 -2rem; */
+    width: calc( 100% - 4rem );
+}
+
+.upload.hovered {
+    background-color: #DEFFDA;
+    border-color: #8FEE84;
+}
+
+table {
+    /* margin-top: 2rem; */
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    table-layout: fixed;
+}
+
+td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0px;
+}
+
+td > img {
+    height: 30px;
+}
+
+thead {
+    /* border-bottom: 1px solid gainsboro; */
+    background-color: whitesmoke;
+    margin-bottom: 2px;
+}
+
+button {
+    padding: 3px 6px;
+    border: none;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:disabled {
+    background-color: whitesmoke;
+    color: gray;
+    cursor: not-allowed;
+}
+
+button:disabled:hover {
+    background-color: whitesmoke;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button.bigger {
+    font-size: 1rem;
+    padding: 6px 10px;
+}
+
+.tiny-button-icon {
+    height: 12px; 
+    margin-top:3px;
+    margin-bottom: -2px;
+}
+
+.row-err {
+    background-color: #F8D7DA;
+    color: #721C24;
+}

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Tool</title>
+    <link rel="stylesheet" href="client.css">
+
+    <!-- Scripts -->
+    <script type="module" src="/client.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="client.css">
+</head>
+
+<body>
+    <div class="center">
+        <div class="header">
+            <h2>qrtool</h2>
+            <small>.png/.jpg/.gif → .svg</small>
+        </div>
+        <input class="upload" accept="image/*" multiple type="file" name="PNG Upload" id="upload">
+        <div class="statbar">
+            <h3 id="file_count">0 Archivo(s)</h3>
+            <div>
+                <button class="bigger" disabled id="dl_all">Descargar Todo (.zip)</button>
+            </div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 40px"></th>
+                    <th style="width: 200px">Nombre</th>
+                    <th>URL Decodificada</th>
+                    <th style="width: 50px"></th>
+                </tr>
+            </thead>
+            <tbody id="image-table-body">
+                
+            </tbody>
+        </table>
+    </div>
+</body>
+
+<template id="row-template">
+    <tr>
+        <td><img src="" alt=""></td>
+        <td>-</td>
+        <td><a target="_blank" href="#">-</a></td>
+        <td style="text-align: right;"><button>svg <img class="tiny-button-icon" src="/dl.svg" alt=""></button></td>
+    </tr>
+</template>
+
+<template id="row-template-err">
+    <tr class="row-err">
+        <td><img src="" alt=""></td>
+        <td>-</td>
+        <td>-</td>
+        <td></td>
+    </tr>
+</template>
+
+</html>
