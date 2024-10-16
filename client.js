@@ -128,7 +128,6 @@ async function createURI(url, encode = false) {
     // })
     let style = document.querySelector('input[name="style"]:checked').value;
     let cutout = document.querySelector('input[name="cutout"]:checked').value;
-    console.log(style)
     let uri = new QRCodeStyling({
         ...qrStyles[style],
         data: url,
@@ -156,11 +155,9 @@ async function createURI(url, encode = false) {
             let r = Number.parseFloat(el.getAttribute('r'))
             el.setAttribute('r', r * 0.8)
         })
-        console.log(doc)
         uri = '<?xml version="1.0" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" xmlns:xlink="http://www.w3.org/1999/xlink">'
             + doc.documentElement.innerHTML + '</svg>'
     }
-    console.log(uri)
     //convert svg source to URI data scheme.
     if (encode)
         uri = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(uri);
@@ -175,8 +172,6 @@ window.submitCustom = () => {
 }
 
 document.getElementById('upload').addEventListener('change', async (event) => {
-
-    console.log(event.target.files)
 
     // Clear previous items
     items = []
@@ -210,7 +205,6 @@ document.getElementById('upload').addEventListener('change', async (event) => {
             })
         } catch (err) {
             // Append to list of unsuccessful scans
-            console.log(err)
             errors.push(new QRItem(image, event.target.files[i].name, err))
             updateItems()
             continue
