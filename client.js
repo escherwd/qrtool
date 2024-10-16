@@ -3,6 +3,7 @@ import QRWriter from 'qrcode'
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import moment from 'moment';
+import QRCodeStyling from 'qr-code-styling';
 
 class QRItem {
     src;
@@ -58,6 +59,7 @@ function updateItems() {
         newItem.querySelectorAll("img")[0].src = item.src;
         let td = newItem.querySelectorAll("td");
         td[1].innerText = item.fileName;
+        td[2].innerText = item.url;
         table.appendChild(newItem);
     }
 }
@@ -85,19 +87,92 @@ async function dlQR(url, fileName) {
     saveAs(dataURI, createNewFilename(fileName))
 }
 
+/** @type {Object<string,Partial<import('qr-code-styling').Options>>} */
+const qrStyles = {
+    "default": {
+        // nothing unique
+    },
+    "black": {
+        dotsOptions: {
+            type: 'dots'
+        },
+        cornersDotOptions: {
+            type: 'square'
+        },
+        cornersSquareOptions: {
+            type: 'square'
+        },
+    },
+    "white": {
+        dotsOptions: {
+            type: 'dots',
+            color: '#ffffff',
+        },
+        cornersDotOptions: {
+            type: 'square',
+            color: '#ffffff'
+        },
+        cornersSquareOptions: {
+            type: 'square',
+            color: '#ffffff'
+        },
+    }
+}
+
 // Create a functional svg file given the output of QRWriter
 async function createURI(url, encode = false) {
-    let uri = await QRWriter.toString(url, {
-        type: 'svg'
+    // let uri = await QRWriter.toString(url, {
+    //     type: 'svg',
+    //     margin: 0,
+    //     scale: 1,
+    // })
+    let style = document.querySelector('input[name="style"]:checked').value;
+    let cutout = document.querySelector('input[name="cutout"]:checked').value;
+    console.log(style)
+    let uri = new QRCodeStyling({
+        ...qrStyles[style],
+        data: url,
+        type: 'svg',
+        margin: 0,
+        width: 300,
+        height: 300,
+        backgroundOptions: {
+            color: 'transparent'
+        },
+        image: (cutout == 'none')
+            ? undefined
+            : (cutout == 'esat') ? '/esat_a.svg' : '/empty.svg',
+        imageOptions: {
+            margin: 10
+        }
     })
+    // console.log()
     //add xml declaration
-    uri = '<?xml version="1.0" standalone="no"?>\r\n' + uri;
+    uri = await (await uri.getRawData('svg')).text()
+    if (style == 'white' || style == 'black') {
+        // Make the dots smaller
+        let doc = new DOMParser().parseFromString(uri, 'image/svg+xml')
+        doc.querySelectorAll('circle').forEach(el => {
+            let r = Number.parseFloat(el.getAttribute('r'))
+            el.setAttribute('r', r * 0.8)
+        })
+        console.log(doc)
+        uri = '<?xml version="1.0" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" xmlns:xlink="http://www.w3.org/1999/xlink">'
+            + doc.documentElement.innerHTML + '</svg>'
+    }
+    console.log(uri)
     //convert svg source to URI data scheme.
     if (encode)
         uri = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(uri);
     return uri;
 }
 
+window.submitCustom = () => {
+    let el = document.querySelector('#url_input')
+    items.push(new QRItem(null, "-", el.value))
+    el.value = null
+    updateItems()
+}
 
 document.getElementById('upload').addEventListener('change', async (event) => {
 
@@ -109,7 +184,7 @@ document.getElementById('upload').addEventListener('change', async (event) => {
 
     for (let i = 0; i < event.target.files.length; i++) {
         // Skip non-images
-        if (!/\.(jpg|png|gif)$/.test(event.target.files[i].name))
+        if (!/\.(jpg|jpeg|png|gif)$/.test(event.target.files[i].name.toLowerCase()))
             continue
         // Step 1: read the file
         let image = await new Promise((resolve, reject) => {
@@ -135,7 +210,8 @@ document.getElementById('upload').addEventListener('change', async (event) => {
             })
         } catch (err) {
             // Append to list of unsuccessful scans
-            errors.push(new QRItem(image, event.target.files[i].name, null))
+            console.log(err)
+            errors.push(new QRItem(image, event.target.files[i].name, err))
             updateItems()
             continue
         }
@@ -154,3 +230,25 @@ drop.addEventListener("dragenter", () => {
 drop.addEventListener("dragleave", () => {
     drop.classList.remove('hovered')
 }, false);
+
+
+// Live preview updating
+const updateLivePreview = async () => {
+    // Get the current style to set the preview background color
+    const style = document.querySelector('input[name="style"]:checked').value
+    document.querySelector('#qr-preview').classList.toggle('dark', style == 'white')
+    // Generate a preview qrcode
+    document.querySelector('#qr-preview > img').setAttribute('src', await createURI('https://esat.es', true))
+}
+
+document.querySelectorAll('input[type=radio]').forEach(el => el.addEventListener('change', async (event) => {
+    sessionStorage.setItem('style', document.querySelector('input[name="style"]:checked').value)
+    sessionStorage.setItem('cutout', document.querySelector('input[name="cutout"]:checked').value)
+    updateLivePreview()
+}))
+
+
+// Restore state from sessionStorage
+document.querySelector(`input[name="style"][value="${sessionStorage.getItem('style')}"]`).checked = true
+document.querySelector(`input[name="cutout"][value="${sessionStorage.getItem('cutout')}"]`).checked = true
+updateLivePreview()

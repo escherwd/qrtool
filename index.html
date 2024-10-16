@@ -21,12 +21,55 @@
             <small>.png/.jpg/.gif → .svg</small>
         </div>
         <input class="upload" accept="image/*" multiple type="file" name="PNG Upload" id="upload">
+        <form onsubmit="submitCustom()">
+            <input type="url" id="url_input" class="url_input" placeholder="O ingrese una URL">
+        </form>
+        
         <div class="statbar">
             <h3 id="file_count">0 Archivo(s)</h3>
             <div>
                 <button class="bigger" disabled id="dl_all">Descargar Todo (.zip)</button>
             </div>
         </div>
+        <div class="preview-row">
+            <div class="optionsbar">
+                <div class="option">
+                    <span class="optionsbar-label">Estilo:</span>
+                    <div>
+                        <input type="radio" name="style" value="default" id="style_default" checked>
+                        <label for="style_default">Normal</label>
+                    </div>
+                    <div>
+                        <input onchange="document.getElementById('cutout_esat').checked = true" type="radio" name="style" value="white" id="style_white">
+                        <label for="style_white">ESAT (blanco)</label>
+                    </div>
+                    <div>
+                        <input onchange="document.getElementById('cutout_esat').checked = true" type="radio" name="style" value="black" id="style_black">
+                        <label for="style_black">ESAT (negro)</label>
+                    </div>
+                </div>
+                <div class="option">
+                    <span class="optionsbar-label">Icono:</span>
+                    <div>
+                        <input type="radio" name="cutout" value="none" id="cutout_none" checked>
+                        <label for="cutout_none">Nada</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="cutout" value="esat" id="cutout_esat">
+                        <label for="cutout_esat">ESAT 'A'</label>
+                    </div>
+                    <div>
+                        <input type="radio" name="cutout" value="space" id="cutout_space">
+                        <label for="cutout_space">Espacio Vacío</label>
+                    </div>
+                </div>
+    
+            </div>
+            <div id="qr-preview" class="preview">
+                <img src="" alt="qrcode preview">
+            </div>
+        </div>
+        
         <table>
             <thead>
                 <tr>
@@ -37,7 +80,7 @@
                 </tr>
             </thead>
             <tbody id="image-table-body">
-                
+
             </tbody>
         </table>
     </div>
